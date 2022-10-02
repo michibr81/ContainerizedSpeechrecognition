@@ -2,6 +2,7 @@ FROM ubuntu
 
 #prepare
 RUN apt update
+RUN apt upgrade
 RUN apt install -y apt-utils
 RUN apt install -y python3-pip
 
@@ -20,9 +21,10 @@ RUN apt install -y pulseaudio swig libpulse-dev
 RUN pip install PocketSphinx
 
 WORKDIR /home
-ADD recorded.wav /home
 
+#used for testing sound card
+ADD recorded.wav /home  
+#the speechrecogition-logic
 ADD speechrecog.py /home
-
 
 #RUN python3 speechrecog.py
