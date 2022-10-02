@@ -23,7 +23,7 @@ RUN pip install PocketSphinx
 WORKDIR /home
 
 #used for testing sound card
-ADD recorded.wav /home  
+#ADD recorded.wav /home  
 #the speechrecogition-logic
 ADD speechrecog.py /home
 
