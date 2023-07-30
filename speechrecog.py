@@ -18,7 +18,7 @@ def DetectText(recognizer):
 r = sr.Recognizer()
 keyWord = 'hey sunshine'
 
-with sr.Microphone(device_index = 0) as source:
+with sr.Microphone(device_index = 2) as source:
     r.adjust_for_ambient_noise(source)
 
     print('Please start speaking..\n')

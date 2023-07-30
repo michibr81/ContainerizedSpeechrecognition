@@ -6,6 +6,8 @@ By using the python library **SpeechRecognition** its almost any easy task with 
 
 - <https://pypi.org/project/SpeechRecognition/>
 - <https://www.askpython.com/python-modules/speech-recognition>
+- <https://github.com/Uberi/speech_recognition/blob/master/reference/library-reference.rst>
+- <https://github.com/Uberi/speech_recognition/blob/master/examples/microphone_recognition.py>
 
 As **Pocketsphinx** is the only algorithm which runs offline it may be a good solution, to avoid constantly sending spoken text from an private environment. 
 
@@ -51,6 +53,16 @@ Record sound
 ```sh
 arecord -d 10 -D plughw:1,0 sample.wav  #hw:1,0 my be different
 ```
+
+Speaker test
+
+```sh
+cat /proc/asound/modules
+speaker-test -c2 -twav -l7 -D plughw:1,0
+```
+
+<https://www.tinkerboy.xyz/raspberry-pi-test-sound-output/>
+
 
 ### Docker actions
 

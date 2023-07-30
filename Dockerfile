@@ -5,10 +5,15 @@ RUN apt update
 RUN apt upgrade
 RUN apt install -y apt-utils
 RUN apt install -y python3-pip
+RUN apt install -y vim
+
+RUN python3 -m pip install --upgrade pip
 
 #sound
 #RUN apt-get install -y libasound-dev libportaudio2 libportaudiocpp0 portaudio19-dev libsndfile1
 RUN apt install -y alsa-base alsa-utils
+
+
 
 #speech-recog
 RUN apt install -y portaudio19-dev 
@@ -26,5 +31,5 @@ WORKDIR /home
 #ADD recorded.wav /home  
 #the speechrecogition-logic
 ADD speechrecog.py /home
-
+ADD sample.wav /home
 #RUN python3 speechrecog.py
