@@ -22,6 +22,8 @@ RUN pip install SpeechRecognition
 RUN apt install -y flac
 RUN apt install -y git
 
+RUN pip install paho-mqtt
+
 #pocketshinx
 RUN apt install -y pulseaudio swig libpulse-dev
 RUN pip install PocketSphinx

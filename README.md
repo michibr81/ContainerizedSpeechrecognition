@@ -71,7 +71,7 @@ As there may be people which ar new to docker (as was me), here the commands I u
 In directory of [Dockerfile](Dockerfile)
 
 ```bash
-docker build "." -t speechRecogImage
+docker build . -t speechrecog
 ```
 
 Run interactive (with bash in container for testing), giving the sound-device from host:
@@ -79,7 +79,7 @@ Run interactive (with bash in container for testing), giving the sound-device fr
 ```bash
 docker run -it --device /dev/snd:/dev/snd speech bash
 #with working folders
-docker run -it --device /dev/snd:/dev/snd -v /media/DATENLT/Programmierung/_GIT_REPOS/ContainerizedSpeechrecognitionTest/sphinx_models:/home/sphinx_models -v /media/DATENLT/Programmierung/_GIT_REPOS/ContainerizedSpeechrecognitionTest/scripts:/home/scripts:rw  speechrecog bash
+docker run -it --device /dev/snd:/dev/snd -v ./sphinx_models:/home/sphinx_models -v ./scripts:/home/scripts:rw  speechrecog bash
 ```
 
 This changes the commandline to the one of the docker-container, where commands can be performed (e.g. for start the upper ones to play and record sound)
