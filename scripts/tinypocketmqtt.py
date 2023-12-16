@@ -7,6 +7,7 @@ import speech_recognition as sr
 from pocketsphinx import LiveSpeech
 from pocketsphinx import get_model_path #, get_data_path
 
+
 print("#######################################")
 print(get_model_path('en-us'))
 

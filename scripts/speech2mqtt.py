@@ -10,6 +10,8 @@ import inspect
 import paho.mqtt.client as mqtt
 #import winsound
 import json
+import speechEngine as se
+#<s>,büro,<sil>,teilweise,hoch,</s>
 
 print("Livespeech before")
 speech = LiveSpeech(
@@ -20,9 +22,12 @@ speech = LiveSpeech(
     no_search=False,
     full_utt=False,
     verbose=False,
-    hmm='/home/sphinx_models/cmusphinx-cont-voxforge-de/model_parameters/voxforge.cd_cont_6000',
-    lm='/home/sphinx_models/cmusphinx-voxforge-de.lm.bin',
-    dic='/home/sphinx_models/tinyde.dict'    
+    # hmm='/home/sphinx_models/cmusphinx-cont-voxforge-de/model_parameters/voxforge.cd_cont_6000',
+    # lm='/home/sphinx_models/cmusphinx-voxforge-de.lm.bin',
+    # dic='/home/sphinx_models/tinyde.dict'
+    hmm='/media/DATENLT/Programmierung/_GIT_REPOS/ContainerizedSpeechrecog/sphinx_models/cmusphinx-cont-voxforge-de/model_parameters/voxforge.cd_cont_6000',
+    lm='/media/DATENLT/Programmierung/_GIT_REPOS/ContainerizedSpeechrecog/sphinx_models/cmusphinx-voxforge-de.lm.bin',
+    dic='/media/DATENLT/Programmierung/_GIT_REPOS/ContainerizedSpeechrecog/sphinx_models/tinyde.dict'   
     )
 
 print("Livespeech started")
@@ -60,34 +65,11 @@ commandMapStr = """
 commandMap = json.loads(commandMapStr)
 #print(commandMap)
 
-def FindKeys(jsonpart,recognizedwords):
-    foundkeys = []
-    print("search for " + ",".join(recognizedwords) + " in json: " + json.dumps(jsonpart))
-    for el in jsonpart: #iterate through each direction
-        for key in el: # just for getting the single jsonpartkey
-            print(el[key])
-            for word in recognizedwords: #checking if any allowed 
-                if word in el[key]:
-                    print(f"{word} is found: add " + key + " to found keys")
-                    foundkeys.append(key)
-    return list(set(foundkeys)) #remove double ones
-
-
-def FindCommandPart(partDescription, recognizedwords, commandMap):    
-    cmdPartMap = commandMap[partDescription]
-    foundKeys = FindKeys(cmdPartMap,recognizedwords)
-
-    if(len(foundKeys) == 0):
-            print(f"No {partDescription} found")
-    elif(len(foundKeys) >1):
-        print(f"Too many {partDescription}s found ")
-    else:
-        print(f"{partDescription} found: " + foundKeys[0])
-
 # an for in loop to iterate in speech
 for phrase in speech:
     print("waiting for keyphrase")
     recognizedSpeech = phrase.segments(detailed=True)
+    print(f"TYPE ---------: {type(recognizedSpeech)}")
     print(recognizedSpeech)
     recognizedwords = [speechPart[0] for speechPart in recognizedSpeech]
     print("recognizedwords: " + ",".join(recognizedwords))
@@ -96,41 +78,10 @@ for phrase in speech:
         print("waiting for command")
         for phrase in speech:
             recognizedSpeech = phrase.segments(detailed=True)
+            print(f"recognizedWors TYPE: {type(recognizedwords)}")
             print(recognizedSpeech)
-            recognizedwords = [speechPart[0] for speechPart in recognizedSpeech]
+            recognizedwords = [speechPart for speechPart in recognizedSpeech]
 
-            FindCommandPart("Direction",recognizedwords,commandMap)
-            
-            # #start with direction
-            # directions = commandMap["Direction"]
-            # direction = FindKeys(directions,recognizedwords)
-            
-            # if(len(direction) == 0):
-            #      print("No direction found")
-            # elif(len(direction) >1):
-            #     print("too many directions found ")
-            # else:
-            #     print("Direction found: " + direction[0])
-
-
-
-
-
-            # for dir in directions:
-            #     for word in dir:
-            #         if word in recognizedwords:
-            #             return dir
-            # if('büro' in words):
-            #     print("command for badezimmer detected")
-            #     if('halb' in words or 'teilweise' in words):
-            #         print("command for teilweise detected")
-            #         if('herrunter' in words or 'runter' in words):
-            #             print("command for runter detected")
-            #             print("Fahre Büro halb runter")
-            #             ret= client.publish(MQTT_PATH,"OfficeShutterHalfDown")
-
-
-
-        
-
-
+            command = se.FindShutterCommand(recognizedwords, commandMap)
+            print(command)
+            ret= client.publish(MQTT_PATH,command)   
