@@ -1,17 +1,14 @@
 #!/usr/bin/env python3
 
-# NOTE: this example requires PyAudio because it uses the Microphone class
-
+# NOTE: requires PyAudio because it uses the Microphone class
 import time
-#import speech_recognition as sr
 from pocketsphinx import LiveSpeech
 from pocketsphinx import get_model_path #, get_data_path
 import inspect
 import paho.mqtt.client as mqtt
-#import winsound
 import json
 import speechEngine as se
-#<s>,büro,<sil>,teilweise,hoch,</s>
+from enum import Enum
 
 print("Livespeech before")
 speech = LiveSpeech(
@@ -62,26 +59,55 @@ commandMapStr = """
     ]
 }
 """
+
+class SPEECH_DETECTION_STATE(Enum):
+    WAITING_FOR_KEYPHRASE = 1, #initial state
+    WAITING_FOR_COMMAND = 2,
+    PEFORM_COMMAND_ACTION = 3
+
+
+
 commandMap = json.loads(commandMapStr)
+keyphrase = 'computer'
+
+state = SPEECH_DETECTION_STATE.WAITING_FOR_KEYPHRASE
+print(f"waiting for keyphrase '{keyphrase}'...")
+for phrase in speech:    
+    recognizedSpeech = phrase.segments(detailed=True)
+    print(f"Recognized (raw): {recognizedSpeech}")
+    recognizedwords = [speechPart[0] for speechPart in recognizedSpeech]
+    print(f"Recognized (words): {','.join(recognizedwords)}")
+
+    if(state == SPEECH_DETECTION_STATE.WAITING_FOR_KEYPHRASE and keyphrase in recognizedwords):
+        print('keyphrase detected, waiting for command....')
+        state = SPEECH_DETECTION_STATE.WAITING_FOR_COMMAND
+    elif(state == SPEECH_DETECTION_STATE.WAITING_FOR_COMMAND):
+        #words = [speechPart[0] for speechPart in recognizedSpeech]
+        command = se.FindShutterCommand(recognizedwords, commandMap)
+        print(f"Detected command: {command}")
+        ret= client.publish(MQTT_PATH,command)
+        state = SPEECH_DETECTION_STATE.WAITING_FOR_KEYPHRASE
+
+
 #print(commandMap)
 
 # an for in loop to iterate in speech
-for phrase in speech:
-    print("waiting for keyphrase")
-    recognizedSpeech = phrase.segments(detailed=True)
-    print(f"TYPE ---------: {type(recognizedSpeech)}")
-    print(recognizedSpeech)
-    recognizedwords = [speechPart[0] for speechPart in recognizedSpeech]
-    print("recognizedwords: " + ",".join(recognizedwords))
-    if 'computer' in recognizedwords:
-        print('keyphrase detected')
-        print("waiting for command")
-        for phrase in speech:
-            recognizedSpeech = phrase.segments(detailed=True)
-            print(f"recognizedWors TYPE: {type(recognizedwords)}")
-            print(recognizedSpeech)
-            recognizedwords = [speechPart for speechPart in recognizedSpeech]
+# for phrase in speech:
+#     print("waiting for keyphrase")
+#     recognizedSpeech = phrase.segments(detailed=True)
+#     print(f"TYPE ---------: {type(recognizedSpeech)}")
+#     print(recognizedSpeech)
+#     recognizedwords = [speechPart[0] for speechPart in recognizedSpeech]
+#     print("recognizedwords: " + ",".join(recognizedwords))
+#     if 'computer' in recognizedwords:
+#         print('keyphrase detected')
+#         print("waiting for command")
+#         for phrase in speech:
+#             recognizedSpeech = phrase.segments(detailed=True)
+#             print(f"recognizedWors TYPE: {type(recognizedwords)}")
+#             print(recognizedSpeech)
+#             recognizedwords = [speechPart for speechPart in recognizedSpeech]
 
-            command = se.FindShutterCommand(recognizedwords, commandMap)
-            print(command)
-            ret= client.publish(MQTT_PATH,command)   
+#             command = se.FindShutterCommand(recognizedwords, commandMap)
+#             print(command)
+#             ret= client.publish(MQTT_PATH,command)   
