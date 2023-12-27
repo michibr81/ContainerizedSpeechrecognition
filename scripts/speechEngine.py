@@ -25,8 +25,8 @@ def FindCommandPart(partDescription, recognizedwords, commandMap):
         print(f"{partDescription} found: " + foundKeys[0])
         return foundKeys[0]
     
-def FindShutterCommand(recognizedSpeech, commandMap):
-    recognizedwords = [speechPart[0] for speechPart in recognizedSpeech]
+def FindShutterCommand(recognizedwords, commandMap):
+    #recognizedwords = [speechPart[0] for speechPart in recognizedSpeech]
     print(f"recognizedWords {recognizedwords}")
     
     location = FindCommandPart("Location",recognizedwords,commandMap)
