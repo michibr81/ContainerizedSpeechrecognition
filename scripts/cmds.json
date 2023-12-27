@@ -1,32 +1,57 @@
 {
-    
-    "CommandPath": "Shutters",
-    "AllowedWords":["Rolladen","Fenster","Rollo","Fensterladen","Jalousie"],
-    "Parts":[
-        {
-            "Name":"Location",
-            "Types":[
-                {"Name":"Bath", "Options":["bad","badezimmer"]},
-                {"Name":"Office", "Options":["büro"]},
-                {"Name":"All", "Options":["alle"]},
-                {"Name":"South", "Options":["süd","südseite","sonnenseite"]},
-                {"Name":"Living", "Options":["essstube","esstisch","esszimmer"]}
-            ]
-        },
-        {
-            "Name":"Direction",
-            "Types":[
-                {"Name":"Down", "Options":["runter","herrunter","zu","herab"]},
-                {"Name":"Up", "Options":["hoch","rauf","herauf"]}
-            ]
-        },
-        {
-            "Name":"Quantity",
-            "Types":[
-                {"Name":"Half", "Options":["halb","teilweise"]},
-                {"Name":"Full", "Options":["komplett","ganz"]}
-            ]
-        }
-    ] 
-    
+    "CommandCategories":[
+    {   
+        "PartsOrder":["Location","Command","Quantity","Direction"],
+        "Parts":[
+            {
+                "Name":"Command",
+                "Types":[
+                    {"Name":"Shutters", "Options":["rolladen","fenster","rollo","fensterladen","jalousie"]}
+                ]
+            },
+            {
+                "Name":"Location",
+                "Types":[
+                    {"Name":"Bath", "Options":["bad","badezimmer"]},
+                    {"Name":"Office", "Options":["büro"]},
+                    {"Name":"All", "Options":["alle"]},
+                    {"Name":"South", "Options":["süd","südseite","sonnenseite"]},
+                    {"Name":"Living", "Options":["essstube","esstisch","esszimmer"]}
+                ]
+            },
+            {
+                "Name":"Direction",
+                "Types":[
+                    {"Name":"Down", "Options":["runter","herrunter","zu","herab"]},
+                    {"Name":"Up", "Options":["hoch","rauf","herauf"]}
+                ]
+            },
+            {
+                "Name":"Quantity",
+                "Types":[
+                    {"Name":"Half", "Options":["halb","teilweise"]},
+                    {"Name":"Full", "Options":["komplett","ganz"]}
+                ]
+            }
+        ]
+    },
+    {   
+        "PartsOrder":["CommandName","Action"],
+        "Parts":[
+            {
+                "Name":"CommandName",
+                "Types":[
+                    {"Name":"Radio", "Options":["radio","musik"]}
+                ]
+            },
+            {
+                "Name":"Action",
+                "Types":[
+                    {"Name":"On", "Options":["an","einschalten"]},
+                    {"Name":"Off", "Options":["aus","ausschalten"]}
+                ]
+            }
+        ]
+    }
+]
 }

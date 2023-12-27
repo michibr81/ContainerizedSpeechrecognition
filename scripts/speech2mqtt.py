@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-# NOTE: requires PyAudio because it uses the Microphone class
+import speechEngine as se# NOTE: requires PyAudio because it uses the Microphone class
 import time
 from pocketsphinx import LiveSpeech
 from pocketsphinx import get_model_path #, get_data_path
@@ -9,6 +9,7 @@ import paho.mqtt.client as mqtt
 import json
 import speechEngine as se
 from enum import Enum
+import commandComposition as comp
 
 print("Livespeech before")
 speech = LiveSpeech(
@@ -70,6 +71,15 @@ class SPEECH_DETECTION_STATE(Enum):
 commandMap = json.loads(commandMapStr)
 keyphrase = 'computer'
 
+from pathlib import Path
+
+jsn = None
+base_path = Path(__file__).parent
+with open((base_path / "cmds.json").resolve()) as f:
+    jsn = json.loads(f.read())
+#     IterateCategories(jsn,["büro", "fenster","teilweise","runter"] )
+
+
 state = SPEECH_DETECTION_STATE.WAITING_FOR_KEYPHRASE
 print(f"waiting for keyphrase '{keyphrase}'...")
 for phrase in speech:    
@@ -82,10 +92,10 @@ for phrase in speech:
         print('keyphrase detected, waiting for command....')
         state = SPEECH_DETECTION_STATE.WAITING_FOR_COMMAND
     elif(state == SPEECH_DETECTION_STATE.WAITING_FOR_COMMAND):
-        #words = [speechPart[0] for speechPart in recognizedSpeech]
-        command = se.FindShutterCommand(recognizedwords, commandMap)
+        #command = se.FindShutterCommand(recognizedwords, commandMap)
+        command = comp.IterateCategories(jsn,recognizedwords)
         print(f"Detected command: {command}")
-        ret= client.publish(MQTT_PATH,command)
+        ret = client.publish(MQTT_PATH,command)
         state = SPEECH_DETECTION_STATE.WAITING_FOR_KEYPHRASE
 
 
