@@ -1,4 +1,17 @@
 {
+    "PocketSphinx":
+    {
+        "hmm":"../sphinx_models/cmusphinx-cont-voxforge-de/model_parameters/voxforge.cd_cont_6000",
+        "lm":"../sphinx_models/cmusphinx-voxforge-de.lm.bin",
+        "dic":"../sphinx_models/tinyde.dict"
+    },
+    "Keyphrase":"computer",
+    "Mqtt":
+    {
+        "Server":"MBraspi4",
+        "Path": "MBR/automation/shutters",
+        "Port":1883
+    },
     "CommandCategories":[
     {   
         "PartsOrder":["Location","Command","Quantity","Direction"],
