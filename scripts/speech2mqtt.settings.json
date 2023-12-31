@@ -8,7 +8,7 @@
     "Keyphrase":"computer",
     "Mqtt":
     {
-        "Server":"MBraspi4",
+        "Server":"localhost",
         "Path": "MBR/automation/shutters",
         "Port":1883
     },
