@@ -12,6 +12,7 @@ from enum import Enum
 import commandComposition as comp
 from pathlib import Path
 import os
+import logging
 
 def make_relative_path_to_this(path):
     if(os.path.isabs(path)):
@@ -19,6 +20,9 @@ def make_relative_path_to_this(path):
     else:
         base_path = Path(__file__).parent
         return str((base_path / path).resolve())
+    
+logging.basicConfig(filename=make_relative_path_to_this('speech2mqtt.log'), encoding='utf-8', level=logging.DEBUG)
+
 settings = None
 #base_path = Path(__file__).parent
 with open(make_relative_path_to_this("speech2mqtt.settings.json")) as f:
@@ -29,7 +33,7 @@ hmmpath = make_relative_path_to_this(settings["PocketSphinx"]["hmm"])
 lmpath = make_relative_path_to_this(settings["PocketSphinx"]["lm"])
 dic = make_relative_path_to_this(settings["PocketSphinx"]["dic"])
 
-print("Livespeech before")
+logging.info("Livespeech before")
 speech = LiveSpeech(
     audio_device=None,
     kws_threshold=1e-20,
@@ -50,7 +54,7 @@ MQTT_PORT = settings["Mqtt"]["Port"]
 
 
 def on_connect(client, userdata, flags, rc):
-    print("Connected to mqtt with result code "+str(rc))
+    logging.info("Connected to mqtt with result code "+str(rc))
 client = mqtt.Client()
 client.on_connect = on_connect 
 client.connect(MQTT_SERVER, MQTT_PORT , 60)
@@ -64,19 +68,19 @@ class SPEECH_DETECTION_STATE(Enum):
 keyphrase = settings["Keyphrase"]
 
 state = SPEECH_DETECTION_STATE.WAITING_FOR_KEYPHRASE
-print(f"waiting for keyphrase '{keyphrase}'...")
+logging.info(f"waiting for keyphrase '{keyphrase}'...")
 for phrase in speech:    
     recognizedSpeech = phrase.segments(detailed=True)
-    print(f"Recognized (raw): {recognizedSpeech}")
+    logging.info(f"Recognized (raw): {recognizedSpeech}")
     recognizedwords = [speechPart[0] for speechPart in recognizedSpeech]
-    print(f"Recognized (words): {','.join(recognizedwords)}")
+    logging.info(f"Recognized (words): {','.join(recognizedwords)}")
 
     if(state == SPEECH_DETECTION_STATE.WAITING_FOR_KEYPHRASE and keyphrase in recognizedwords):
-        print('keyphrase detected, waiting for command....')
+        logging.info('keyphrase detected, waiting for command....')
         state = SPEECH_DETECTION_STATE.WAITING_FOR_COMMAND
     elif(state == SPEECH_DETECTION_STATE.WAITING_FOR_COMMAND):
         command = comp.IterateCategories(settings,recognizedwords)
         if(command is not None):
-            print(f"Detected command: {command}")
+            logging.info(f"Detected command: {command}")
             ret = client.publish(MQTT_PATH,command)
         state = SPEECH_DETECTION_STATE.WAITING_FOR_KEYPHRASE

@@ -19,7 +19,7 @@
             {
                 "Name":"Command",
                 "Types":[
-                    {"Name":"Shutters", "Options":["rolladen","fenster","rollo","fensterladen","jalousie"]}
+                    {"Name":"Shutter", "Options":["rolladen","fenster","rollo","fensterladen","jalousie"]}
                 ]
             },
             {

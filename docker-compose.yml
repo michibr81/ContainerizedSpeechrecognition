@@ -1,0 +1,13 @@
+version: "3.8"
+services:  
+  speechrecog:
+    build: .
+    network_mode: "host"
+    ports:
+      - "1883:1883"
+    devices:
+     - /dev/snd:/dev/snd
+    volumes:
+     - ./sphinx_models:/home/sphinx_models
+     #- ./scripts:/home/scripts:rw #may be uncommented for debugging
+    restart: always
