@@ -2,9 +2,7 @@ version: "3.8"
 services:  
   speechrecog:
     build: .
-    #network_mode: "host" #may be uncommented for debugging
-    #ports: #may be uncommented for debugging
-    #  - "1883:1883" #may be uncommented for debugging
+    network_mode: "host"
     devices:
      - /dev/snd:/dev/snd
     volumes:
