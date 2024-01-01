@@ -83,4 +83,6 @@ for phrase in speech:
         if(command is not None):
             logging.info(f"Detected command: {command}")
             ret = client.publish(MQTT_PATH,command)
+        else:
+            logging.info(f"Command was 'None'")
         state = SPEECH_DETECTION_STATE.WAITING_FOR_KEYPHRASE
