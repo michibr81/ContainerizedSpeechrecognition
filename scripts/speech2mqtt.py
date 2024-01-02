@@ -82,6 +82,8 @@ for phrase in speech:
         command = comp.IterateCategories(settings,recognizedwords)
         if(command is not None):
             logging.info(f"Detected command: {command}")
+            if client.is_connected != True:
+                client.connect(MQTT_SERVER, MQTT_PORT , 60)
             ret = client.publish(MQTT_PATH,command)
         else:
             logging.info(f"Command was 'None'")
